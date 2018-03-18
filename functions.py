@@ -25,7 +25,7 @@ def parse_dot(dot):
 
 def get_edges(one_node, all_edges):
     """
-    Выдаем список всех ребер, выходящих из этой вершины
+    Выдаем список только ребер, выходящих из этой вершины
     :param one_node: имя вершины
     :param all_edges: все ребра
     :return: result список ребер
@@ -39,7 +39,6 @@ def get_edges(one_node, all_edges):
 
 def dialog(node_name, answer, graph):
     """
-
     :param node_name: текущая вершина
     :param answer: ответ пользователя
     :return: новая текущая вершина и сообщение для пользователя и ошибка
@@ -51,7 +50,7 @@ def dialog(node_name, answer, graph):
     if node_name == 'End':
         # Если это вершина End, то программа закончена
         msg = 'Поздравляю, алгоритм завершен'
-        err = 2
+        err = 21
     else:
         # Получаем список ребер из этой вершины
         edges = get_edges(node_name, all_edges)
@@ -69,7 +68,7 @@ def dialog(node_name, answer, graph):
         else:
             msg += 'Ошибка! Из вершины с именем %s, комментарий %s нет ребер. ' \
                    'Из всех вершин кроме End должно вести хотя бы одно ребро.' % (node_name, all_nodes[node_name])
-            err = 3
+            err = 22
         if err == 0:
             # Сейчас у нас выбрана вершина, напечатаем к ней комментарий
             msg += all_nodes[node_name].replace(r'\n', ' ')
@@ -83,3 +82,6 @@ def dialog(node_name, answer, graph):
                 for i in range(1, len(edges) + 1):
                     msg += '\n%s) %s' % (i, edges[i - 1][2])
     return node_name, msg, err
+
+
+
