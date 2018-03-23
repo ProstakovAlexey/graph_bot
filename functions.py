@@ -1,12 +1,12 @@
 def parse_dot(dot):
     """
-    Список всех ребер
-    :param dot:
-    :return:
+    List all node and edges
+    :param dot: dot type
+    :return: dict nodes, list edges
     """
-    # Сделать список всех узлов
+
+    # Dict for node. Node have only label.
     nodes = dict()
-    # Список всех ребер. У ребра 3 свойства - откруда, куда и метка. Пример ребра
     for node in dot.get_node_list():
         key = node.get_name()
         try:
@@ -14,6 +14,7 @@ def parse_dot(dot):
         except KeyError:
             nodes[key] = key
     edges = list()
+    # List all edges. Edge have values: from, to, label
     for edge in dot.get_edges():
         try:
             name = edge.get_attributes()['label'].replace('"', '')
@@ -25,60 +26,60 @@ def parse_dot(dot):
 
 def get_edges(one_node, all_edges):
     """
-    Выдаем список только ребер, выходящих из этой вершины
-    :param one_node: имя вершины
-    :param all_edges: все ребра
-    :return: result список ребер
+    List all edges, for one node
+    :param one_node: node
+    :param all_edges: all edges
+    :return: result: edges list
     """
     result = list()
     for e in all_edges:
         if e[0] == one_node:
             result.append(e)
-    return result
+    return sorted(result)
 
 
 def dialog(node_name, answer, graph):
     """
-    :param node_name: текущая вершина
-    :param answer: ответ пользователя
-    :return: новая текущая вершина и сообщение для пользователя и ошибка
+    :param node_name: current node
+    :param answer: user answer
+    :return: new current node and message for user
     """
     all_nodes = graph[0]
     all_edges = graph[1]
     msg = ''
     err = 0
     if node_name == 'End':
-        # Если это вершина End, то программа закончена
-        msg = 'Поздравляю, алгоритм завершен'
+        msg = 'Congratulations, the algorithm is complete'
         err = 21
     else:
         # Получаем список ребер из этой вершины
         edges = get_edges(node_name, all_edges)
-        # Ребер должно быть 1 или больше, иначе это ошибка
+        # Must be one or more edges else error in dot file
         if len(edges) == 1:
-            # Ребро одно, поэтому перехоми к следующей вершине
+            # Node have one edges, go to next node
             node_name = edges[0][1]
         elif len(edges) > 1:
-            # Вершин несколько, надо анализировать ответ
+            # Node have two or more edges, need answer analise
             if answer == 0 or answer > len(edges):
-                # Ответ не правильный, вершину не меняем
-                msg += 'Ответ не правильный, надо выбрать из предложенных и ввести его номер. '
+                # The answer is not correct, dot no change
+                msg += 'The answer is not correct, you must choose from the suggestions and enter its number. '
             else:
                 node_name = edges[answer - 1][1]
         else:
-            msg += 'Ошибка! Из вершины с именем %s, комментарий %s нет ребер. ' \
-                   'Из всех вершин кроме End должно вести хотя бы одно ребро.' % (node_name, all_nodes[node_name])
+            msg += 'ERROR! Node name %s, comment %s have not edge(s). ' \
+                   'Any node must hav edge(s), except End, one must lead at least one edge in dot file.' \
+                   % (node_name, all_nodes[node_name])
             err = 22
         if err == 0:
-            # Сейчас у нас выбрана вершина, напечатаем к ней комментарий
+            # Add comment for node
             msg += all_nodes[node_name].replace(r'\n', ' ')
-            # Получаем список ребер из этой вершины
+            # List edges for this node
             edges = get_edges(node_name, all_edges)
             if len(edges) == 1:
-                # Если ребро 1, то надо просто нажать ОК и после перейти по ребру 1
-                msg += '\nПо готовности напишите ок'
+                # Only one edge, don't need choice
+                msg += '\nPlease press ENTER'
             else:
-                # Если ребер более 1, то напечатать вопрос
+                # User must make choice
                 for i in range(1, len(edges) + 1):
                     msg += '\n%s) %s' % (i, edges[i - 1][2])
     return node_name, msg, err
