@@ -33,68 +33,64 @@ def dot_algoritm(user_id, user_name, text):
     """
     This is main function. It make answer for user
     :param user_id: unic user id
-    :param user_name: имя пользователя
-    :param text: сообщение пользователя
+    :param user_name:
+    :param text:
     :return:
     """
     global users
     node = 0
-    # Если сказал end, забываем историю
+    # User ask end, history was forget
     if text.find('/end') >= 0:
-        msg = 'Алгоритм прерван по Вашему желанию. Можете начать сначала.'
+        msg = 'The algorithm is interrupted at your request. You can start again use command /start'
         err = 1
 
-    # сказал start, начинаем сначала
+    # User ask start
     elif text.find('/start') >= 0:
-        # надо найти номер решения, к которому будем обращатся. Разбиваем строку по пробелу
+        # Must find the number of the solution. Split the line by space
         answ = text.split()
-        # Если длина 2 то обрабатываем. Пример /start 1
+        # If length 2 then process. Example / start 1
         if len(answ) == 2:
             try:
                 numer = int(answ[1])
             except ValueError:
                 numer = -1
-            # Проверим, что решение существует
+            # Let us verify that the solution exists
             if numer >= 1 and numer <= len(graph_object_list):
                 numer -= 1
                 users[user_id] = [numer, 'Start']
-                # Начать опрос
-                print(users)
-                print(user_id)
-                print(numer)
                 node, msg, err = functions.dialog(node_name=users[user_id][1],
                                                   answer=1,
                                                   graph=graph_object_list[users[user_id][0]])
             else:
-                msg = 'Вы ввели неправильный номер, нужно вводить от 1 до %s' % len(graphs)
+                msg = 'You entered the wrong number, you need to enter from 1 to %s' % len(graphs)
                 err = 2
         else:
-            msg = 'Вы ввели команду start в неправильном формате, нужно /start 1 или /start 2'
+            msg = 'You entered the start command in the wrong format, good format example /start 1'
             err = 3
 
-    # если пользователя нет в словаре добавим
+    # if the user is not in the dictionary add
     elif text.find('/help') >= 0:
-        msg = 'Привет %s. Я могу помочь найти решение некоторых проблем используя заранее подготовленные графы' \
-              'решений. Вы можете посмотреть все имеющиеся решения командой /list. ' \
-              'Чтобы начать работу напишу /start и номер решения, например /start 1. После я задам несколько вопросов, которые' \
-              'помогут разобраться с проблемой. Я запоминаю нашу переписку (если меня не перезагрузят) и можно продолжить' \
-              'с предыдущего места. Если хочешь закончить, то напиши /end.' % user_name
+        msg = 'Hi% s. I can help to find a solution to some problems using pre-prepared graphs solutions. ' \
+              'You can see all available solutions with the / list command. For starting, you write /start and' \
+              ' the solution number, for example /start 1. After I ask some questions that will help to sort' \
+              ' out the problem. I remember our correspondence (if I do not restart) and I can continue from ' \
+              'the previous place. If you want to finish, then write /end.' % user_name
         err = 4
 
-    # Выдать имеющийся перечень алгоритмов с описанием
+    # Issue an existing list of algorithms with a description
     elif text.find('/list') >= 0:
-        msg = 'Перечень имеющихся алгоритмов:\n'
+        msg = 'List of available algorithms:\n'
         for i in range(0, len(graphs)):
             msg += '\n%s) %s %s' % (i + 1, graphs[i]['file_name'], graphs[i]['description'])
         err = 5
 
-    # Активных разговоров с пользователем нет
+    # There are no active conversations with the user
     elif not (user_id in users):
-        # Мы еще не разговаривали
-        msg = 'Привет %s. Я тебя не помню, дававай начнем работу с команды /help' % user_name
+        # We have not talked yet
+        msg = 'Hi %s. I do not remember you, let is get started with the command /help' % user_name
         err = 6
 
-    # Пользователь отвечает на вопрос
+    # User answers the question
     else:
         try:
             text = int(text)
@@ -102,12 +98,12 @@ def dot_algoritm(user_id, user_name, text):
             text = 0
         node, msg, err = functions.dialog(users[user_id][1], text, graph_object_list[users[user_id][0]])
 
-    # Сюда попадаем если ошибка в графе или он окончен
+    # Here we get if the error in the graph or it is over
     if err:
         if user_id in users:
             users.pop(user_id, None)
-            msg += '\n История сброшена, можно начать снова.'
-    # Перемещаем пользователя на новый узел
+            msg += '\n History is reset, you can start again.'
+    # We move the user to a new node
     else:
         users[user_id][1] = node
     return msg, err
@@ -128,18 +124,18 @@ class Bot:
         request = json.loads(body)
 
         response = ('JSON format is not valid.'+body, 'ERROR')
-        #try:
+        try:
             # Authorization
-        if request['token'] in tokens:
+            if request['token'] in tokens:
                 # token is valid, must work
                 response = dot_algoritm(user_id=request['user_id'],
                                         user_name=request['user_name'],
                                         text=request['text'])
-        else:
-                response = ('token is not valid', 'ERROR')
-        #except KeyError:
+            else:
+                response = ('Token is not valid', 'ERROR')
+        except KeyError:
             # if has error, response make with error=2
-        #    pass
+            response = ('JSON format is not valid', 'ERROR')
         resp.body = json.dumps({'status': response[1], 'text': response[0]})
 
     @staticmethod

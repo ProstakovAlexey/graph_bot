@@ -11,10 +11,11 @@ import functions
 import pydotplus
 import http.client
 import json
+import ssl
 
 
-port = 8000
-addr = '127.0.0.1'
+port = 8443
+addr = '192.168.0.120'
 
 def ask_bot(address, port, request):
     """
@@ -24,7 +25,8 @@ def ask_bot(address, port, request):
     :param request: json.dump and send
     :return: json.load form response
     """
-    con = http.client.HTTPConnection(address, port)
+    # context=ssl._create_unverified_context() - for use untrusted certs
+    con = http.client.HTTPSConnection(address, port, context=ssl._create_unverified_context())
     headers = {"Content-Type": "text/json; charset=utf-8"}
     con.request("POST", '/bot', json.dumps(request).encode('utf-8'), headers=headers)
     result = con.getresponse().read()
@@ -217,7 +219,7 @@ class CaseDot(unittest.TestCase):
             'token': 'test_token',
             'user_id': '123-123',
             'user_name': 'Tester',
-            'text': '2'
+            'text': '1'
         }
         resp = ask_bot(addr, port, req)
         self.assertEqual(resp['status'], 0)
@@ -282,12 +284,12 @@ class CaseDot(unittest.TestCase):
             'token': 'test_token',
             'user_id': '123-123',
             'user_name': 'Tester',
-            'text': '1'
+            'text': '2'
         }
         resp = ask_bot(addr, port, req)
         self.assertEqual(resp['status'], 0)
         if resp['text'].find('Node #3b') == -1:
-            self.fail('Need return Node #3b')
+            self.fail('Need return Node #3b, ask %s' % resp['text'])
         # ok
         req = {
             'token': 'test_token',
@@ -354,4 +356,16 @@ class CaseDot(unittest.TestCase):
         self.assertEqual(resp['status'], 0)
         if resp['text'].find('Node #1') == -1:
             self.fail('Need return Node #1')
+
+    def test11_service(self):
+        """Ask in bad format (tokens), must return 1
+        """
+        req = {
+            'tokens': 'test_token',
+            'user_id': '123-123',
+            'user_name': 'Tester',
+            'text': '/end'
+        }
+        resp = ask_bot(addr, port, req)
+        self.assertEqual(resp['status'], 'ERROR')
 
