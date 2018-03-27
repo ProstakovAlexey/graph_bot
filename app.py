@@ -7,7 +7,7 @@ import falcon
 import json
 
 # Read config file
-error, graphs, tokens, log = read_config.read_config('for_tests/config_6.ini')
+error, graphs, tokens, log = read_config.read_config('config.ini')
 if error:
     print(error)
     exit(1)
