@@ -7,7 +7,8 @@ For it need:
     3. Add section in `config.ini`.
     4. Run (restart) bot.
 
-I made a demonstration project - fishing, you can see it in `graph`. If it is interesting for you - please help me.
+Now you can use program `graph_check.py` for check bot. I made a demonstration project - fishing,
+you can see it in `graph`. If it is interesting for you - please help me.
 Now need javascript for site: small box for bot dialog.
 
 Index

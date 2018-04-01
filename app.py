@@ -70,8 +70,8 @@ def dot_algoritm(user_id, user_name, text):
 
     # if the user is not in the dictionary add
     elif text.find('/help') >= 0:
-        msg = 'Hi% s. I can help to find a solution to some problems using pre-prepared graphs solutions. ' \
-              'You can see all available solutions with the / list command. For starting, you write /start and' \
+        msg = 'Hi %s. I can help to find a solution to some problems using pre-prepared graphs solutions. ' \
+              'You can see all available solutions with the /list command. For starting, you write /start and' \
               ' the solution number, for example /start 1. After I ask some questions that will help to sort' \
               ' out the problem. I remember our correspondence (if I do not restart) and I can continue from ' \
               'the previous place. If you want to finish, then write /end.' % user_name
