@@ -11,7 +11,7 @@ import ssl
 import uuid
 
 port = 8443
-addr = '192.168.0.120'
+addr = 'polar-coast-24118.herokuapp.com'
 token = 'test_token'
 print('This program use for check graph files, loading in bot.')
 input('Will be use address {0}, port {1}. Press ENTER for continue.'.format(addr, port))
