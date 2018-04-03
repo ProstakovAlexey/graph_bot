@@ -122,7 +122,7 @@ class Bot:
         """
         body = req.stream.read().decode('utf-8')
         request = json.loads(body)
-
+        resp.append_header('Access-Control-Allow-Origin', req.get_header('Origin'))
         response = ('JSON format is not valid.'+body, 'ERROR')
         try:
             # Authorization
