@@ -10,7 +10,7 @@ import json
 import ssl
 import uuid
 
-port = 8443
+port = 443
 addr = 'polar-coast-24118.herokuapp.com'
 token = 'test_token'
 print('This program use for check graph files, loading in bot.')
@@ -31,6 +31,7 @@ while ask != 'exit':
     #print(reply)
     con.request("POST", '/bot', json.dumps(reply).encode('utf-8'), headers=headers)
     result = con.getresponse().read()
+    print(result)
     result = json.loads(result.decode('utf-8'))
     if 'error' in result:
         print('Bot response with errror. Error={0}, errorMessage={1}'.
