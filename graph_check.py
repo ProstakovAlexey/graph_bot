@@ -28,10 +28,10 @@ while ask != 'exit':
             'user_name': name,
             'text': ask
         }
-    #print(reply)
+    # print(reply)
     con.request("POST", '/bot', json.dumps(reply).encode('utf-8'), headers=headers)
     result = con.getresponse().read()
-    print(result)
+    # print(result)
     result = json.loads(result.decode('utf-8'))
     if 'error' in result:
         print('Bot response with errror. Error={0}, errorMessage={1}'.
