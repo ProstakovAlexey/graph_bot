@@ -77,10 +77,10 @@ def dot_algoritm(user_id, user_name, text):
     # if the user is not in the dictionary add
     elif text.find('/help') >= 0:
         if lang == 'ru':
-            msg = 'Привет %s. Я могу помочь найти решение некоторых проблем, используя заранее подготовленные' \
-                  'графы решений. Чтобы посмотреть список решение введите /list. Для начала работы с решением' \
-                  'введите /list и номер решения, например /list 1. После я буду задавать вопросы и предлагать' \
-                  'варианты ответов, вводите номер нужного. Я запоминаю разговор (пока не перезагружен). Если' \
+            msg = 'Привет %s. Я могу помочь найти решение некоторых проблем, используя заранее подготовленные ' \
+                  'графы решений. Чтобы посмотреть список решение введите /list. Для начала работы с решением ' \
+                  'введите /list и номер решения, например /list 1. После я буду задавать вопросы и предлагать ' \
+                  'варианты ответов, вводите номер нужного. Я запоминаю разговор (пока не перезагружен). Если ' \
                   'нужно прекратить наберите /end и вернетесь к выбору решения.' % user_name
         else:
             msg = 'Hi %s. I can help to find a solution to some problems using pre-prepared graphs solutions. ' \
@@ -93,7 +93,7 @@ def dot_algoritm(user_id, user_name, text):
     # Issue an existing list of algorithms with a description
     elif text.find('/list') >= 0:
         if lang == 'ru':
-            msg = 'Список доступных решений:\n'
+            msg = 'Список доступных решений (напишите /start и номер решения):\n'
         else:
             msg = 'List of available algorithms:\n'
         for i in range(0, len(graphs)):
