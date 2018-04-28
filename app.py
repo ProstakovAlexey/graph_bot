@@ -7,7 +7,7 @@ import falcon
 import json
 
 # Read config file
-error, graphs, tokens, log = read_config.read_config('config.ini')
+error, graphs, tokens, log, lang = read_config.read_config('config.ini')
 if error:
     print(error)
     exit(1)
@@ -41,7 +41,10 @@ def dot_algoritm(user_id, user_name, text):
     node = 0
     # User ask end, history was forget
     if text.find('/end') >= 0:
-        msg = 'The algorithm is interrupted at your request. You can start again use command /start'
+        if lang == 'ru':
+            msg = 'Алгоритм прерван по Вашему желанию. Можете начать сначала, используя команду /start'
+        else:
+            msg = 'The algorithm is interrupted at your request. You can start again use command /start'
         err = 1
 
     # User ask start
@@ -62,7 +65,10 @@ def dot_algoritm(user_id, user_name, text):
                                                   answer=1,
                                                   graph=graph_object_list[users[user_id][0]])
             else:
-                msg = 'You entered the wrong number, you need to enter from 1 to %s' % len(graphs)
+                if lang == 'ru':
+                    msg = 'Вы ввели не правильный номер. Нужно вводить номер от 1 до %s' % len(graphs)
+                else:
+                    msg = 'You entered the wrong number, you need to enter from 1 to %s' % len(graphs)
                 err = 2
         else:
             msg = 'You entered the start command in the wrong format, good format example /start 1'
@@ -70,7 +76,14 @@ def dot_algoritm(user_id, user_name, text):
 
     # if the user is not in the dictionary add
     elif text.find('/help') >= 0:
-        msg = 'Hi %s. I can help to find a solution to some problems using pre-prepared graphs solutions. ' \
+        if lang == 'ru':
+            msg = 'Привет %s. Я могу помочь найти решение некоторых проблем, используя заранее подготовленные' \
+                  'графы решений. Чтобы посмотреть список решение введите /list. Для начала работы с решением' \
+                  'введите /list и номер решения, например /list 1. После я буду задавать вопросы и предлагать' \
+                  'варианты ответов, вводите номер нужного. Я запоминаю разговор (пока не перезагружен). Если' \
+                  'нужно прекратить наберите /end и вернетесь к выбору решения.' % user_name
+        else:
+            msg = 'Hi %s. I can help to find a solution to some problems using pre-prepared graphs solutions. ' \
               'You can see all available solutions with the /list command. For starting, you write /start and' \
               ' the solution number, for example /start 1. After I ask some questions that will help to sort' \
               ' out the problem. I remember our correspondence (if I do not restart) and I can continue from ' \
@@ -79,7 +92,10 @@ def dot_algoritm(user_id, user_name, text):
 
     # Issue an existing list of algorithms with a description
     elif text.find('/list') >= 0:
-        msg = 'List of available algorithms:\n'
+        if lang == 'ru':
+            msg = 'Список доступных решений:\n'
+        else:
+            msg = 'List of available algorithms:\n'
         for i in range(0, len(graphs)):
             msg += '\n%s) %s %s' % (i + 1, graphs[i]['file_name'], graphs[i]['description'])
         err = 5
@@ -87,7 +103,10 @@ def dot_algoritm(user_id, user_name, text):
     # There are no active conversations with the user
     elif not (user_id in users):
         # We have not talked yet
-        msg = 'Hi %s. I do not remember you, let is get started with the command /help' % user_name
+        if lang == 'ru':
+            msg = 'Привет %s. Я Вас не помню, пожалуйста введите команду /help для знакомства' % user_name
+        else:
+            msg = 'Hi %s. I do not remember you, let is get started with the command /help' % user_name
         err = 6
 
     # User answers the question
@@ -102,7 +121,10 @@ def dot_algoritm(user_id, user_name, text):
     if err:
         if user_id in users:
             users.pop(user_id, None)
-            msg += '\n History is reset, you can start again.'
+            if lang == 'ru':
+                msg += '\n История переписки удалена, можно начать сначала.'
+            else:
+                msg += '\n History is reset, you can start again.'
     # We move the user to a new node
     else:
         users[user_id][1] = node

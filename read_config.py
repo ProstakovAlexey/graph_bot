@@ -18,6 +18,7 @@ def read_config(file_name="config.ini"):
     tokens = list()
     log = None
     tokens_file_name = "tokens.txt"
+    lang = 'eng'
 
     if os.access(file_name, os.F_OK):
         with open(file_name, encoding='utf-8', mode='r') as f:
@@ -31,9 +32,10 @@ def read_config(file_name="config.ini"):
         for section in sections:
             i = conf[section]
             # section with tokens and logs setup
-            if section.count('files'):
+            if section.count('settings'):
                 tokens_file_name = i.get('tokens', fallback="tokens.txt")
                 log = i.get('log', fallback="log.txt")
+                lang = i.get('lang', fallback="eng")
             # sections with graph description
             if section.count('graph'):
                 graph = dict()
@@ -68,4 +70,4 @@ def read_config(file_name="config.ini"):
             error += 'Graphs list is emtpy. '
     else:
         error = "Configuration file is not found."
-    return error, graphs, tokens, log
+    return error, graphs, tokens, log, lang
