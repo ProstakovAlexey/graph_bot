@@ -79,7 +79,7 @@ def dot_algoritm(user_id, user_name, text):
         if lang == 'ru':
             msg = 'Привет %s. Я могу помочь найти решение некоторых проблем, используя заранее подготовленные ' \
                   'графы решений. Чтобы посмотреть список решение введите /list. Для начала работы с решением ' \
-                  'введите /startt и номер решения, например /start 1. После я буду задавать вопросы и предлагать ' \
+                  'введите /start и номер решения, например /start 1. После я буду задавать вопросы и предлагать ' \
                   'варианты ответов, вводите номер нужного. Я запоминаю разговор (пока не перезагружен). Если ' \
                   'нужно прекратить наберите /end и вернетесь к выбору решения.' % user_name
         else:
@@ -93,11 +93,11 @@ def dot_algoritm(user_id, user_name, text):
     # Issue an existing list of algorithms with a description
     elif text.find('/list') >= 0:
         if lang == 'ru':
-            msg = 'Список доступных решений (напишите /start и номер решения):\n'
+            msg = 'Список доступных решений (напишите /start и номер решения):<b/>'
         else:
-            msg = 'List of available algorithms:\n'
+            msg = 'List of available algorithms:<br/>'
         for i in range(0, len(graphs)):
-            msg += '\n%s) %s %s' % (i + 1, graphs[i]['file_name'], graphs[i]['description'])
+            msg += '<br/>%s) %s %s' % (i + 1, graphs[i]['file_name'], graphs[i]['description'])
         err = 5
 
     # There are no active conversations with the user
@@ -122,9 +122,9 @@ def dot_algoritm(user_id, user_name, text):
         if user_id in users:
             users.pop(user_id, None)
             if lang == 'ru':
-                msg += '\n История переписки удалена, можно начать сначала.'
+                msg += '<br/>История переписки удалена, можно начать сначала.'
             else:
-                msg += '\n History is reset, you can start again.'
+                msg += '<br/>History is reset, you can start again.'
     # We move the user to a new node
     else:
         users[user_id][1] = node
