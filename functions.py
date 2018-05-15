@@ -49,7 +49,8 @@ def dialog(node_name, answer, graph):
     msg = ''
     err = 0
     if node_name == 'End':
-        msg = 'Congratulations, the algorithm is complete'
+        msg = 'Поздравляю. Алгоритм завершен'
+        # msg = 'Congratulations, the algorithm is complete'
         err = 21
     else:
         # Получаем список ребер из этой вершины
@@ -62,7 +63,8 @@ def dialog(node_name, answer, graph):
             # Node have two or more edges, need answer analise
             if answer == 0 or answer > len(edges):
                 # The answer is not correct, dot no change
-                msg += 'The answer is not correct, you must choose from the suggestions and enter its number. '
+                msg += 'Ответ неправильный. Выберите вариант из предложенных выше и введите его номер'
+                # msg += 'The answer is not correct, you must choose from the suggestions and enter its number. '
             else:
                 node_name = edges[answer - 1][1]
         else:
@@ -77,11 +79,12 @@ def dialog(node_name, answer, graph):
             edges = get_edges(node_name, all_edges)
             if len(edges) == 1:
                 # Only one edge, don't need choice
-                msg += '\nPlease press ENTER'
+                msg += '<br/>Нажмите ENTER'
+                # msg += '\nPlease press ENTER'
             else:
                 # User must make choice
                 for i in range(1, len(edges) + 1):
-                    msg += '\n%s) %s' % (i, edges[i - 1][2])
+                    msg += '<br/>%s) %s' % (i, edges[i - 1][2])
     return node_name, msg, err
 
 
