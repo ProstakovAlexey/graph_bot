@@ -1,0 +1,15 @@
+.idea
+__pycache__
+*.pyc
+*.log
+*.socket
+dataset/data
+training
+tools/data
+tools/video
+tools/Обрезанные фреймы
+tools/dataset
+venv
+
+
+
