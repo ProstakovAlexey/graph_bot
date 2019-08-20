@@ -3,38 +3,26 @@
 import read_config
 import pydotplus
 import functions
-import falcon
+from tornado import web, escape, ioloop, httpclient, gen
 import json
-
-# Read config file
-error, graphs, tokens, log, lang = read_config.read_config('config.ini')
-if error:
-    print(error)
-    exit(1)
-
-# Read dot files
-graph_object_list = list()
-for graph in graphs:
-    try:
-        gr = pydotplus.graphviz.graph_from_dot_file(graph['file_name'])
-        graph_object_list.append(functions.parse_dot(gr))
-    except:
-        print('Can not parse dot file:', graph['file_name'])
-
-if len(graph_object_list) < 1:
-    print('Can not read any dot files')
-    exit(1)
+import jsonschema
+from http import HTTPStatus
+import exceptions
+import logging
 
 # Dict for users
 users = dict()
+logger = logging.getLogger('bot_logger')
 
 
-def dot_algoritm(user_id, user_name, text):
+
+def dot_algorithm(user_id, user_name, text, lang='ru'):
     """
     This is main function. It make answer for user
     :param user_id: unic user id
     :param user_name:
     :param text:
+    :param lang:
     :return:
     """
     global users
@@ -128,51 +116,107 @@ def dot_algoritm(user_id, user_name, text):
     # We move the user to a new node
     else:
         users[user_id][1] = node
-    return msg, err
+    return msg
 
 
-class Bot:
-    @staticmethod
-    def on_post(req, resp):
-        """Handles POST requests. Format:
-        {
-            'token':
-            'user_id':
-            'user_name':
-            'text':
+class Bot(web.RequestHandler):
+
+    SUPPORTED_METHODS = ("GET", "POST", )
+    tokens = set()
+
+    def initialize(self, *args, **kwargs):
+        """Get all token from file"""
+        with open('tokens.txt') as fp:
+            keys = fp.readlines()
+            for key in keys:
+                self.tokens.add(key.strip())
+
+    def post(self):
+        """Handles POST requests."""
+        # Cross scripting
+        self.add_header('Access-Control-Allow-Origin', self.request.headers.get('Origin', '*'))
+
+        schema = {
+            "type": "object",
+            "properties": {
+                "token": {"type": "string"},
+                "user_id": {"type": "string"},
+                "user_name": {"type": "string"},
+                "text": {"type": "string"},
+            },
+            "required": ["token", "text", ]
         }
-        """
-        body = req.stream.read().decode('utf-8')
-        request = json.loads(body)
-        resp.append_header('Access-Control-Allow-Origin', req.get_header('Origin'))
-        response = ('JSON format is not valid.'+body, 'ERROR')
+
+        # JSON schema validations
         try:
-            # Authorization
-            if request['token'] in tokens:
-                # token is valid, must work
-                response = dot_algoritm(user_id=request['user_id'],
-                                        user_name=request['user_name'],
-                                        text=request['text'])
-            else:
-                response = ('Token is not valid', 'ERROR')
-        except KeyError:
-            # if has error, response make with error=2
-            response = ('JSON format is not valid', 'ERROR')
-        resp.body = json.dumps({'status': response[1], 'text': response[0]})
+            request_data = escape.json_decode(self.request.body)
+            jsonschema.validate(request_data, schema)
+            logger.debug(f'Получил сообщение: {request_data}')
+            """
+            response = dot_algorithm(user_id=request_data['user_id'],
+                                     user_name=request_data['user_name'],
+                                     text=request_data['text'])
+                                     """
+            self.write()
+        except jsonschema.exceptions.ValidationError as err:
+            self.set_status(HTTPStatus.BAD_REQUEST)
+            self.write({'detail': err.message})
+        except exceptions.AuthException:
+            self.set_status(HTTPStatus.UNAUTHORIZED)
+            self.write({'detail': 'Authorization error for token = %s' % request_data['token']})
 
-    @staticmethod
-    def on_get(req, resp):
+    def get(self):
         """Bot work only with POST request"""
-        response = {'error': 3,
+        self.write({'error': 3,
                     'errorMessage': 'Bot work only with POST requests. '
-                                    'Look - https://github.com/ProstakovAlexey/graph_bot'}
-        resp.body = json.dumps(response)
-
-api = falcon.API()
-api.add_route('/bot', Bot())
+                                    'Look - https://github.com/ProstakovAlexey/graph_bot'})
 
 
+class Application(web.Application):
+    def __init__(self, **kwargs):
+        handlers = [
+            (r"/bot", Bot),
+        ]
+        super(Application, self).__init__(handlers, **kwargs)
 
 
+if __name__ == "__main__":
+    # Read config file
+    error, graphs, tokens, log, lang = read_config.read_config('config.ini')
+    if error:
+        print(error)
+        exit(1)
 
+    # Логирование в файл
+    logger.setLevel('DEBUG')
+    handler = logging.handlers.TimedRotatingFileHandler(log, when='midnight', interval=1, backupCount=3,
+                                                        encoding='utf-8')
+    handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
+    logger.addHandler(handler)
+    logger.info('Программа запущена')
 
+    # Read dot files
+    graph_object_list = list()
+    for graph in graphs:
+        try:
+            gr = pydotplus.graphviz.graph_from_dot_file(graph['file_name'])
+            graph_object_list.append(functions.parse_dot(gr))
+        except:
+            logger.error('Can not parse dot file:', graph['file_name'])
+
+    if not graph_object_list:
+        logger.critical('Can not read any dot files')
+        exit(1)
+
+    logger.debug('Прочитал %s dot файлов' % len(graph_object_list))
+
+    # Start app
+    application = Application()
+    port = 8888
+    msg = "Listening at port {0}".format(port)
+    logging.info(msg)
+    application.listen(port)
+    tornado_ioloop = ioloop.IOLoop.instance()
+    periodic_callback = ioloop.PeriodicCallback(lambda: None, 500)
+    periodic_callback.start()
+    tornado_ioloop.start()

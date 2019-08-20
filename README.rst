@@ -20,3 +20,7 @@ you can see it in `graph`. Demo project deploying in Heroku, URL=http://polar-co
 Please look more documentation in `doc/`
 
 If it is interesting for you - please help me. Now need javascript for site: small box for bot dialog.
+
+RUN_TEST
+========
+pytest --cov -v test_*.py

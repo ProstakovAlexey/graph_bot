@@ -3,7 +3,6 @@ from http import HTTPStatus
 import json
 import pytest
 import tornado
-from tornado import escape
 from tornado.httpclient import HTTPClientError
 
 
