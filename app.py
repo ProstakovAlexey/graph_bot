@@ -152,13 +152,14 @@ class Bot(web.RequestHandler):
         try:
             request_data = escape.json_decode(self.request.body)
             jsonschema.validate(request_data, schema)
-            logger.debug(f'Получил сообщение: {request_data}')
+            logger.debug('Получил сообщение: %s' % request_data)
             """
             response = dot_algorithm(user_id=request_data['user_id'],
                                      user_name=request_data['user_name'],
                                      text=request_data['text'])
                                      """
-            self.write()
+            self.set_status(HTTPStatus.OK)
+            print(request_data)
         except jsonschema.exceptions.ValidationError as err:
             self.set_status(HTTPStatus.BAD_REQUEST)
             self.write({'detail': err.message})
@@ -187,13 +188,15 @@ if __name__ == "__main__":
     if error:
         print(error)
         exit(1)
-
+    """
+    на heroku логирование в файл не работает
     # Логирование в файл
     logger.setLevel('DEBUG')
     handler = logging.handlers.TimedRotatingFileHandler(log, when='midnight', interval=1, backupCount=3,
                                                         encoding='utf-8')
     handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
     logger.addHandler(handler)
+    """
     # Логирование на экран
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.DEBUG)
