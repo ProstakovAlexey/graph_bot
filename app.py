@@ -220,7 +220,7 @@ if __name__ == "__main__":
 
     # Start app
     application = Application()
-    port = 5000
+    port = 8888
     msg = "Listening at port {0}".format(port)
     logging.info(msg)
     application.listen(port)
