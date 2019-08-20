@@ -9,11 +9,11 @@ import jsonschema
 from http import HTTPStatus
 import exceptions
 import logging
+import sys
 
 # Dict for users
 users = dict()
 logger = logging.getLogger('bot_logger')
-
 
 
 def dot_algorithm(user_id, user_name, text, lang='ru'):
@@ -193,6 +193,14 @@ if __name__ == "__main__":
                                                         encoding='utf-8')
     handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
     logger.addHandler(handler)
+    # Логирование на экран
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    handler.setFormatter(logging.Formatter('Bot %(levelname)s: %(message)s'))
+    logger.addHandler(handler)
+
+
+
     logger.info('Программа запущена')
 
     # Read dot files
