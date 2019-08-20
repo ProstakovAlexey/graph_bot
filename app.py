@@ -151,7 +151,7 @@ class Bot(web.RequestHandler):
         # JSON schema validations
         try:
             request_data = escape.json_decode(self.request.body)
-            jsonschema.validate(request_data, schema)
+            # jsonschema.validate(request_data, schema)
             logger.debug('Получил сообщение: %s' % request_data)
             """
             response = dot_algorithm(user_id=request_data['user_id'],
@@ -214,7 +214,7 @@ if __name__ == "__main__":
             gr = pydotplus.graphviz.graph_from_dot_file(graph['file_name'])
             graph_object_list.append(functions.parse_dot(gr))
         except:
-            logger.error('Can not parse dot file:', graph['file_name'])
+            logger.error('Can not parse dot file: ' + graph['file_name'])
 
     if not graph_object_list:
         logger.critical('Can not read any dot files')
