@@ -10,6 +10,7 @@ from http import HTTPStatus
 import exceptions
 import logging
 import sys
+import os
 
 # Dict for users
 users = dict()
@@ -220,7 +221,7 @@ if __name__ == "__main__":
 
     # Start app
     application = Application()
-    port = 8888
+    port = int(os.environ.get('PORT', 5000))
     msg = "Listening at port {0}".format(port)
     logging.info(msg)
     application.listen(port)
