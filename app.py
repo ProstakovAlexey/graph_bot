@@ -125,15 +125,15 @@ if __name__ == "__main__":
     handler.setLevel(logging.DEBUG)
     handler.setFormatter(logging.Formatter('Bot %(levelname)s: %(message)s'))
     logger.addHandler(handler)
-    logger.info('Программа запущена')
+    logger.info('Program is run')
 
     # Read dot files
 
     graph.append(graphs)
-    if graph.len() >= 0:
+    if graph.len() < 1:
         logger.critical('Can not read any dot files')
         exit(1)
-    logger.debug('Прочитал %s dot файлов' % graph.len())
+    logger.debug('Read %s dot file(s)' % graph.len())
 
     # Start app
     application = Application()
