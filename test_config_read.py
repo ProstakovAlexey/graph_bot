@@ -1,7 +1,7 @@
 import read_config
 import unittest
 import pydotplus
-import functions
+import classes
 
 
 class CaseConfig(unittest.TestCase):
@@ -39,31 +39,6 @@ class CaseDot(unittest.TestCase):
         """Load config and checking data"""
         error, graphs, tokens, log, lang = read_config.read_config('for_tests/config_6.ini')
         self.assertFalse(error)
-        graph_object_list = list()
-        for graph in graphs:
-            gr = pydotplus.graphviz.graph_from_dot_file(graph['file_name'])
-            graph_object_list.append(functions.parse_dot(gr))
-        self.assertEqual(len(graph_object_list), 1)
-        good = (
-            {
-                'node': 'node',
-                'Start': 'Start',
-                'T1': 'Node #1. Only one way.',
-                'T2': 'Node #2, have question with choice. What choice you?',
-                'T3a': 'Node #3a. You was say YES',
-                'T3b': 'Node #3b. You was say NO',
-                'T4': 'Finish node #4. One way.',
-                'End': 'End'
-            },
-            [
-                ['Start', 'T1', None],
-                ['T1', 'T2', None],
-                ['T2', 'T3a', 'YES'],
-                ['T2', 'T3b', 'NO'],
-                ['T3a', 'T4', None],
-                ['T3b', 'T4', None],
-                ['T4', 'End', None]
-            ]
-        )
-        self.assertEqual(good[0], graph_object_list[0][0],
-                         'Error in function for read graph file. Problem with node list.')
+        graph = classes.GraphObject()
+        graph.append(graphs)
+        assert graph.len() == 1

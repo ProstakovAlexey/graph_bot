@@ -23,4 +23,27 @@ If it is interesting for you - please help me. Now need javascript for site: sma
 
 RUN_TEST
 ========
+
+Run one test
+------------
 pytest --cov -v test_*.py
+
+Run all tests
+-------------
+pytest --cov
+coverage report -m
+coverage html
+
+ALGORITM
+========
+1. Wait message form user.
+2. Message received.
+3. Message if command? (first chat is /)
+3.1 Yes, it is command /end: clear users history
+3.2 It is command /start: start new dotschema
+3.3 it is command /help: show message
+3.4 it is command /list: show all dot schemas
+3.5 don't know command - show message with command list
+4. Now, it is no command. Perhabs it is answer for question
+4.1 Answer is digits or ENTER? If not - show message with error.
+4.2
