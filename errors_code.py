@@ -25,7 +25,7 @@ ERRORS = {
               'the previous place. If you want to finish, then write /end.'
     },
     6: {
-        'ru': 'Список доступных решений (напишите /start и номер решения):<b/>',
+        'ru': 'Список доступных решений (напишите /start и номер решения):',
         'result': 'List of available algorithms:<br/>'
     },
     7: {
@@ -33,8 +33,8 @@ ERRORS = {
         'en': 'Hi %s. I do not remember you, let is get started with the command /help'
     },
     19: {
-        'ru': 'Нажмите ENTER',
-        'en': 'Please press ENTER'
+        'ru': 'Введите что угодно, нажмите ENTER',
+        'en': 'Input any thing and press ENTER'
     },
     20: {
         'en': 'ERROR! Node name %s, comment %s have not edge(s). '
@@ -45,6 +45,10 @@ ERRORS = {
     21: {
         'ru': 'Поздравляю. Алгоритм завершен!',
         'en': 'Congratulations, the algorithm is complete!'
+    },
+    22: {
+        'ru': 'Надо ввести цифру',
+        'en': 'Please input only digits'
     }
 }
 

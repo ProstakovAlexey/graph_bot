@@ -7,6 +7,7 @@ import sys
 import os
 import errors_code
 import classes
+import traceback
 
 # Dict for users
 logger = logging.getLogger()
@@ -84,12 +85,18 @@ class Bot(web.RequestHandler):
 
     def post(self):
         """Handles POST requests."""
-        request_data = escape.json_decode(self.request.body)['message']
-        logger.debug('Получил сообщение: %s' % request_data)
-        response = dot_algorithm(user_id=request_data['from']['id'],
-                                    user_name=request_data['from']['username'],
-                                     text=request_data['text'],
-                                     lang=request_data['from']['language_code'])
+        try:
+            request_data = escape.json_decode(self.request.body)['message']
+            logger.debug('Получил сообщение: %s' % request_data)
+            response = dot_algorithm(user_id=request_data['from']['id'],
+                                        user_name=request_data['from']['username'],
+                                         text=request_data['text'],
+                                         lang=request_data['from']['language_code'])
+        except:
+            mtype, value, trace = sys.exc_info()
+            logging.error("type=%s, value=%s, trace=%s" % (mtype, value, traceback.format_exc()))
+            self.set_status(200)
+
         self.write({'method': 'sendMessage', 'chat_id': request_data['chat']['id'], 'text': response})
 
     def get(self):

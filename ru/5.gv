@@ -1,0 +1,19 @@
+// Test digraph
+digraph {
+	node[shape="rectangle"]
+	Start [label="Start" style="filled",fillcolor="green"]
+	End [label="End" style="filled",fillcolor="green"]
+	T1 [label="Node #1. Only one way." ]
+	T2 [label="Node #2, have question with choice. What choice you?" style="filled",fillcolor="yellow"]
+	T3a [label="Node #3a. You was say YES"]
+	T3b [label="Node #3b. You was say NO"]
+	T4 [label="Finish node #4. One way."]
+		Start -> T1
+		T1 ->T2
+		T2 -> T3a [label="YES"]
+		T2 -> T3b [label="NO"]
+		T3a -> T4
+		T3b -> T4
+		T4 -> End
+}
+

@@ -60,6 +60,9 @@ class User:
     def get_name(self):
         return self.__name
 
+    def clear(self):
+        self.schema = None
+
     def next_dialog(self, answer):
         """
         :param answer: user answer
@@ -78,19 +81,22 @@ class User:
         elif len(edges) > 1:
             # Node have two or more edges, need answer analise
             # //TODO answer переделать в цифру и именьшить на 1
+            if not answer.isdigit():
+                return msg_code.get_error(22, self.__lang)
             answer = int(answer)
             self.schema.current_node_id = edges[answer - 1][1]
         else:
-            msg = msg_code.get_error(20, self.__lang) \
-                  % (self.schema.current_node_id, all_nodes[self.schema.current_node_id])
-            return msg
+            if self.schema.current_node_id != 'End':
+                msg = msg_code.get_error(20, self.__lang) \
+                      % (self.schema.current_node_id, all_nodes[self.schema.current_node_id])
+                return msg
 
         msg = all_nodes[self.schema.current_node_id].replace(r'\n', ' ')
         # List edges for this node
-        edges = self.schema.get_edges(self.schema.current_node_id, all_edges)
+        edges = self.schema.get_edges(self.schema.current_node_id)
         if len(edges) == 1:
             # Only one edge, don't need choice
-            msg += msg_code.get_error(19, self.__lang)
+            msg += "\n" + msg_code.get_error(19, self.__lang)
         else:
             # User must make choice
             for i in range(1, len(edges) + 1):
@@ -151,7 +157,6 @@ class GraphSchema:
         """
         List all edges, for one node
         :param one_node: node
-        :param all_edges: all edges
         :return: result: edges list
         """
         result = list()
