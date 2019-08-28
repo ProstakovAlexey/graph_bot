@@ -49,6 +49,10 @@ ERRORS = {
     22: {
         'ru': 'Надо ввести цифру',
         'en': 'Please input only digits'
+    },
+    25: {
+        'ru': 'Можно вводить только команды /start /end /list /help',
+        'en': 'You can use command only /start /end /list /help'
     }
 }
 

@@ -15,9 +15,7 @@ def read_config(file_name="config.ini"):
     """
     error = ""
     graphs = list()
-    tokens = list()
     log = None
-    tokens_file_name = "tokens.txt"
     lang = 'eng'
 
     if os.access(file_name, os.F_OK):
@@ -44,16 +42,6 @@ def read_config(file_name="config.ini"):
                 graph['description'] = i.get('description', fallback=None)
                 graphs.append(graph)
 
-        # load tokens
-        if os.access(tokens_file_name, os.F_OK):
-            with open(tokens_file_name, encoding='utf-8', mode='r') as f:
-                for line in f.readlines():
-                    tokens.append(line.strip())
-        else:
-            error += 'File with tokens is not found. '
-        if tokens is None:
-            error += 'Tokens list is emtpy. '
-
         # graph section verify
         if graphs:
             for gr in graphs:
@@ -70,4 +58,4 @@ def read_config(file_name="config.ini"):
             error += 'Graphs list is emtpy. '
     else:
         error = "Configuration file is not found."
-    return error, graphs, tokens, log, lang
+    return error, graphs, log, lang
