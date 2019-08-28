@@ -2,7 +2,7 @@ import pydotplus
 import logging
 import errors_code as msg_code
 
-logger = logging.getLogger('bot_logger')
+logger = logging.getLogger()
 
 
 def singleton(cls):
@@ -78,10 +78,11 @@ class User:
         elif len(edges) > 1:
             # Node have two or more edges, need answer analise
             # //TODO answer переделать в цифру и именьшить на 1
+            answer = int(answer)
             self.schema.current_node_id = edges[answer - 1][1]
         else:
-            msg = msg_code.get_error(20, self.__lang) % (self.schema.current_node_id,
-                                            all_nodes[self.schema.current_node_id])
+            msg = msg_code.get_error(20, self.__lang) \
+                  % (self.schema.current_node_id, all_nodes[self.schema.current_node_id])
             return msg
 
         msg = all_nodes[self.schema.current_node_id].replace(r'\n', ' ')

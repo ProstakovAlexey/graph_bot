@@ -9,7 +9,8 @@ import errors_code
 import classes
 
 # Dict for users
-logger = logging.getLogger('bot_logger')
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 graph = classes.GraphObject()
 users_dict = dict()
 
@@ -31,8 +32,8 @@ def command(user, text):
             # Let us verify that the solution exists
             if 1 <= numer <= graph.len():
                 numer -= 1
-                user.action(schema=numer, node='Start')
-                result = user.action
+                user.start(schema=graph.get_by_id(numer))
+                result = user.next_dialog("any")
             else:
                 result = errors_code.get_error(2, user.get_lang())
 
@@ -89,7 +90,7 @@ class Bot(web.RequestHandler):
                                     user_name=request_data['from']['username'],
                                      text=request_data['text'],
                                      lang=request_data['from']['language_code'])
-        self.write({'chat_id': request_data['chat']['id'], 'text': response})
+        self.write({'method': 'sendMessage', 'chat_id': request_data['chat']['id'], 'text': response})
 
     def get(self):
         """Bot work only with POST request"""

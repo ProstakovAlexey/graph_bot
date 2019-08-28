@@ -47,3 +47,9 @@ ALGORITM
 4. Now, it is no command. Perhabs it is answer for question
 4.1 Answer is digits or ENTER? If not - show message with error.
 4.2
+
+Deploy
+------
+1. commit in master
+2. git push heroku master
+3. heroku ps:scale web=1
